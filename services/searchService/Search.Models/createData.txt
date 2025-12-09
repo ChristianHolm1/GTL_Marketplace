@@ -1,0 +1,100 @@
+{ "index": { "_index": "offers", "_id": "book-001" } }
+{"id":"book-001","title":"Harry Potter and the Philosopher's Stone","author":"J. K. Rowling","quantityAvailable":3}
+{ "index": { "_index": "offers", "_id": "book-002" } }
+{"id":"book-002","title":"Harry Potter and the Chamber of Secrets","author":"J. K. Rowling","quantityAvailable":4}
+{ "index": { "_index": "offers", "_id": "book-003" } }
+{"id":"book-003","title":"Harry Potter and the Prisoner of Azkaban","author":"J. K. Rowling","quantityAvailable":2}
+{ "index": { "_index": "offers", "_id": "book-004" } }
+{"id":"book-004","title":"Harry Potter and the Goblet of Fire","author":"J. K. Rowling","quantityAvailable":5}
+{ "index": { "_index": "offers", "_id": "book-005" } }
+{"id":"book-005","title":"Harry Potter and the Order of the Phoenix","author":"J. K. Rowling","quantityAvailable":4}
+{ "index": { "_index": "offers", "_id": "book-006" } }
+{"id":"book-006","title":"Harry Potter and the Half-Blood Prince","author":"J. K. Rowling","quantityAvailable":3}
+{ "index": { "_index": "offers", "_id": "book-007" } }
+{"id":"book-007","title":"Harry Potter and the Deathly Hallows","author":"J. K. Rowling","quantityAvailable":4}
+{ "index": { "_index": "offers", "_id": "book-008" } }
+{"id":"book-008","title":"The Hobbit","author":"J. R. R. Tolkien","quantityAvailable":5}
+{ "index": { "_index": "offers", "_id": "book-009" } }
+{"id":"book-009","title":"The Lord of the Rings: The Fellowship of the Ring","author":"J. R. R. Tolkien","quantityAvailable":2}
+{ "index": { "_index": "offers", "_id": "book-010" } }
+{"id":"book-010","title":"The Lord of the Rings: The Two Towers","author":"J. R. R. Tolkien","quantityAvailable":2}
+{ "index": { "_index": "offers", "_id": "book-011" } }
+{"id":"book-011","title":"The Lord of the Rings: The Return of the King","author":"J. R. R. Tolkien","quantityAvailable":2}
+{ "index": { "_index": "offers", "_id": "book-012" } }
+{"id":"book-012","title":"A Game of Thrones","author":"George R. R. Martin","quantityAvailable":3}
+{ "index": { "_index": "offers", "_id": "book-013" } }
+{"id":"book-013","title":"A Clash of Kings","author":"George R. R. Martin","quantityAvailable":3}
+{ "index": { "_index": "offers", "_id": "book-014" } }
+{"id":"book-014","title":"A Storm of Swords","author":"George R. R. Martin","quantityAvailable":4}
+{ "index": { "_index": "offers", "_id": "book-015" } }
+{"id":"book-015","title":"A Feast for Crows","author":"George R. R. Martin","quantityAvailable":2}
+{ "index": { "_index": "offers", "_id": "book-016" } }
+{"id":"book-016","title":"A Dance with Dragons","author":"George R. R. Martin","quantityAvailable":1}
+{ "index": { "_index": "offers", "_id": "book-017" } }
+{"id":"book-017","title":"The Catcher in the Rye","author":"J. D. Salinger","quantityAvailable":2}
+{ "index": { "_index": "offers", "_id": "book-018" } }
+{"id":"book-018","title":"To Kill a Mockingbird","author":"Harper Lee","quantityAvailable":3}
+{ "index": { "_index": "offers", "_id": "book-019" } }
+{"id":"book-019","title":"1984","author":"George Orwell","quantityAvailable":5}
+{ "index": { "_index": "offers", "_id": "book-020" } }
+{"id":"book-020","title":"Animal Farm","author":"George Orwell","quantityAvailable":4}
+{ "index": { "_index": "offers", "_id": "book-021" } }
+{"id":"book-021","title":"Brave New World","author":"Aldous Huxley","quantityAvailable":3}
+{ "index": { "_index": "offers", "_id": "book-022" } }
+{"id":"book-022","title":"Fahrenheit 451","author":"Ray Bradbury","quantityAvailable":3}
+{ "index": { "_index": "offers", "_id": "book-023" } }
+{"id":"book-023","title":"The Great Gatsby","author":"F. Scott Fitzgerald","quantityAvailable":2}
+{ "index": { "_index": "offers", "_id": "book-024" } }
+{"id":"book-024","title":"Moby-Dick","author":"Herman Melville","quantityAvailable":1}
+{ "index": { "_index": "offers", "_id": "book-025" } }
+{"id":"book-025","title":"Pride and Prejudice","author":"Jane Austen","quantityAvailable":3}
+{ "index": { "_index": "offers", "_id": "book-026" } }
+{"id":"book-026","title":"Sense and Sensibility","author":"Jane Austen","quantityAvailable":3}
+{ "index": { "_index": "offers", "_id": "book-027" } }
+{"id":"book-027","title":"The Da Vinci Code","author":"Dan Brown","quantityAvailable":4}
+{ "index": { "_index": "offers", "_id": "book-028" } }
+{"id":"book-028","title":"Angels & Demons","author":"Dan Brown","quantityAvailable":4}
+{ "index": { "_index": "offers", "_id": "book-029" } }
+{"id":"book-029","title":"The Silmarillion","author":"J. R. R. Tolkien","quantityAvailable":2}
+{ "index": { "_index": "offers", "_id": "book-030" } }
+{"id":"book-030","title":"The Name of the Wind","author":"Patrick Rothfuss","quantityAvailable":3}
+{ "index": { "_index": "offers", "_id": "book-031" } }
+{"id":"book-031","title":"The Wise Man's Fear","author":"Patrick Rothfuss","quantityAvailable":3}
+{ "index": { "_index": "offers", "_id": "book-032" } }
+{"id":"book-032","title":"Mistborn: The Final Empire","author":"Brandon Sanderson","quantityAvailable":5}
+{ "index": { "_index": "offers", "_id": "book-033" } }
+{"id":"book-033","title":"The Well of Ascension","author":"Brandon Sanderson","quantityAvailable":4}
+{ "index": { "_index": "offers", "_id": "book-034" } }
+{"id":"book-034","title":"The Hero of Ages","author":"Brandon Sanderson","quantityAvailable":4}
+{ "index": { "_index": "offers", "_id": "book-035" } }
+{"id":"book-035","title":"The Way of Kings","author":"Brandon Sanderson","quantityAvailable":5}
+{ "index": { "_index": "offers", "_id": "book-036" } }
+{"id":"book-036","title":"Words of Radiance","author":"Brandon Sanderson","quantityAvailable":4}
+{ "index": { "_index": "offers", "_id": "book-037" } }
+{"id":"book-037","title":"Oathbringer","author":"Brandon Sanderson","quantityAvailable":3}
+{ "index": { "_index": "offers", "_id": "book-038" } }
+{"id":"book-038","title":"Rhythm of War","author":"Brandon Sanderson","quantityAvailable":3}
+{ "index": { "_index": "offers", "_id": "book-039" } }
+{"id":"book-039","title":"Dune","author":"Frank Herbert","quantityAvailable":4}
+{ "index": { "_index": "offers", "_id": "book-040" } }
+{"id":"book-040","title":"Dune Messiah","author":"Frank Herbert","quantityAvailable":3}
+{ "index": { "_index": "offers", "_id": "book-041" } }
+{"id":"book-041","title":"Children of Dune","author":"Frank Herbert","quantityAvailable":3}
+{ "index": { "_index": "offers", "_id": "book-042" } }
+{"id":"book-042","title":"The Hitchhiker's Guide to the Galaxy","author":"Douglas Adams","quantityAvailable":5}
+{ "index": { "_index": "offers", "_id": "book-043" } }
+{"id":"book-043","title":"The Restaurant at the End of the Universe","author":"Douglas Adams","quantityAvailable":4}
+{ "index": { "_index": "offers", "_id": "book-044" } }
+{"id":"book-044","title":"Life, the Universe and Everything","author":"Douglas Adams","quantityAvailable":4}
+{ "index": { "_index": "offers", "_id": "book-045" } }
+{"id":"book-045","title":"So Long, and Thanks for All the Fish","author":"Douglas Adams","quantityAvailable":4}
+{ "index": { "_index": "offers", "_id": "book-046" } }
+{"id":"book-046","title":"The Girl with the Dragon Tattoo","author":"Stieg Larsson","quantityAvailable":3}
+{ "index": { "_index": "offers", "_id": "book-047" } }
+{"id":"book-047","title":"The Girl Who Played with Fire","author":"Stieg Larsson","quantityAvailable":3}
+{ "index": { "_index": "offers", "_id": "book-048" } }
+{"id":"book-048","title":"The Girl Who Kicked the Hornet's Nest","author":"Stieg Larsson","quantityAvailable":2}
+{ "index": { "_index": "offers", "_id": "book-049" } }
+{"id":"book-049","title":"The Alchemist","author":"Paulo Coelho","quantityAvailable":4}
+{ "index": { "_index": "offers", "_id": "book-050" } }
+{"id":"book-050","title":"The Picture of Dorian Gray","author":"Oscar Wilde","quantityAvailable":2}

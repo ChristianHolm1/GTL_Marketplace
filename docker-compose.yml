@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+    ports:
+      - 9200:9200
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+
+
+
+  rabbitmq:
+    image: rabbitmq:4.1.6-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  search-api:
+    build:
+      context: ./services/searchService
+      dockerfile: Dockerfile  
+    environment:
+      - ELASTIC_URI=http://elasticsearch:9200
+      - RABBIT_HOST=rabbitmq
+      - ASPNETCORE_URLS=http://+:80
+    depends_on:
+      - elasticsearch
+      - rabbitmq
+    ports:
+      - 5000:80
+volumes:
+  esdata:
