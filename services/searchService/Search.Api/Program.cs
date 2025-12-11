@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi;
+using Prometheus;
 using Search.Application.Interfaces;
 using Search.Application.Services;
 using Search.Infrastructure;
@@ -13,7 +14,7 @@ using Search.Worker;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddEnvironmentVariables();
-
+builder.Services.AddHealthChecks(); // optional if you use /health
 
 builder.Services.AddSingleton<ElasticClientProvider>();
 
@@ -38,6 +39,8 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Search API v1"));
 //}
-
+app.UseHttpMetrics(); // enable HTTP duration, count, etc.
+app.MapMetrics();     // exposes /metrics
+app.MapHealthChecks("/health"); // optional
 app.MapControllers();
 app.Run();
