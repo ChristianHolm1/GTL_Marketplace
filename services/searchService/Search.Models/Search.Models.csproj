@@ -6,8 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="prometheus-net.AspNetCore.HealthChecks" Version="8.2.1" />
-  </ItemGroup>
-
 </Project>
