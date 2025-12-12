@@ -14,7 +14,7 @@ using Search.Worker;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddEnvironmentVariables();
-builder.Services.AddHealthChecks(); // optional if you use /health
+builder.Services.AddHealthChecks(); 
 
 builder.Services.AddSingleton<ElasticClientProvider>();
 
