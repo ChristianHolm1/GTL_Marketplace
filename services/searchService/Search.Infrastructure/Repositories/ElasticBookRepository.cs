@@ -17,10 +17,10 @@ public class ElasticBookRepository : IElasticBookRepository
     public ElasticBookRepository(ElasticClientProvider prov) => _client = prov.Client;
 
     public Task IndexBookAsync(BookDto b) =>
-        _client.IndexAsync(b, i => i.Index("offers").Id(b.Id));
+        _client.IndexAsync(b, i => i.Index("offers").Id(b.ISBN));
 
     public Task UpdateBookAsync(BookDto book) =>
-        _client.IndexAsync(book, i => i.Index("offers").Id(book.Id));
+        _client.IndexAsync(book, i => i.Index("offers").Id(book.ISBN));
 
 
     public Task DeleteBookAsync(string id) =>
@@ -59,23 +59,20 @@ public class ElasticBookRepository : IElasticBookRepository
                 .Query(qry => qry
                     .Bool(b => b
                         .Should(
-                            // forgiving multi-match across title + author with fuzziness
                             sh => sh.MultiMatch(mm => mm
                                 .Query(normalized)
-                                .Fields(new[] { "title^3", "author^2" }) // boost title higher
+                                .Fields(new[] { "isbn^4", "title^3", "authors^2", "description^1", "tags^1", "categories^1" })
                                 .Fuzziness(new Fuzziness(1))
                                 .Operator(Operator.Or)
                                 .Type(TextQueryType.BestFields)
                             ),
 
-                            // match phrase prefix on author (helps partial name / initials)
                             sh => sh.MatchPhrasePrefix(mpp => mpp
                                 .Field("author")
                                 .Query(normalized)
-                                .Slop(2)    // allow small reordering / gaps
+                                .Slop(2)
                             ),
 
-                            // match phrase prefix on title (helps "harry pot" -> "harry potter")
                             sh => sh.MatchPhrasePrefix(mpp => mpp
                                 .Field("title")
                                 .Query(normalized)

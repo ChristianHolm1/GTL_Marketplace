@@ -29,28 +29,28 @@ public class BooksController : ControllerBase
     public async Task<IActionResult> Create([FromBody] BookDto b)
     {
         await _search.IndexAsync(b);
-        return CreatedAtAction(nameof(GetById), new { id = b.Id }, b);
+        return CreatedAtAction(nameof(GetById), new { b.ISBN }, b);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(string id)
+    [HttpGet("{ISBN}")]
+    public async Task<IActionResult> GetById(string ISBN)
     {
-        var book = await _search.GetByIdAsync(id);
+        var book = await _search.GetByIdAsync(ISBN);
         return book is null ? NotFound() : Ok(book);
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(string id, [FromBody] BookDto b)
+    [HttpPut("{ISBN}")]
+    public async Task<IActionResult> Update(string ISBN, [FromBody] BookDto b)
     {
-        b.Id = id;
+        b.ISBN = ISBN;
         await _search.UpdateAsync(b);
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete("{ISBN}")]
+    public async Task<IActionResult> Delete(string ISBN)
     {
-        await _search.DeleteAsync(id);
+        await _search.DeleteAsync(ISBN);
         return NoContent();
     }
 }

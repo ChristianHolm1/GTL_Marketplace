@@ -1,5 +1,17 @@
 version: '3.8'
 services:
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - search-api
+      - warehouse
+      - warehouse-worker
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
     environment:
@@ -12,26 +24,202 @@ services:
     volumes:
       - esdata:/usr/share/elasticsearch/data
 
+  elasticsearch-exporter:
+    image: justwatch/elasticsearch_exporter:latest
+    environment:
+      - ES_URI=http://elasticsearch:9200
+    ports:
+      - "9114:9114"
+    depends_on:
+      - elasticsearch
 
+  # ----------------------
+  # Redis for warehouse
+  # ----------------------
+  redis-warehouse:
+    image: redis:8.4
+    ports:
+      - "6379:6379"
 
+  redis-exporter-warehouse:
+    image: oliver006/redis_exporter:latest
+    environment:
+      - REDIS_ADDR=redis-warehouse:6379
+    ports:
+      - "9121:9121"
+    depends_on:
+      - redis-warehouse
+
+  # ----------------------
+  # Redis for order
+  # ----------------------
+  redis-order:
+    image: redis:8.4
+    ports:
+      - "6380:6379"   # host 6380 -> container 6379
+
+  redis-exporter-order:
+    image: oliver006/redis_exporter:latest
+    environment:
+      - REDIS_ADDR=redis-order:6379
+    ports:
+      - "9122:9121"
+    depends_on:
+      - redis-order
+
+  # ----------------------
+  # Postgres (warehouse)
+  # ----------------------
+  postgres-warehouse:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: warehouse
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata_warehouse:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d:ro
+
+  # ----------------------
+  # Postgres (order)
+  # ----------------------
+  postgres-order:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: orders       # NOTE: plural 'orders' to avoid SQL keyword confusion
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata_order:/var/lib/postgresql/data
+      - ./init-db-order:/docker-entrypoint-initdb.d:ro
+
+  postgres-exporter-warehouse:
+    image: wrouesnel/postgres_exporter:latest
+    environment:
+      - DATA_SOURCE_NAME=postgresql://postgres:postgres@postgres-warehouse:5432/warehouse?sslmode=disable
+    ports:
+      - "9187:9187"
+    depends_on:
+      - postgres-warehouse
+
+  postgres-exporter-order:
+    image: wrouesnel/postgres_exporter:latest
+    environment:
+      - DATA_SOURCE_NAME=postgresql://postgres:postgres@postgres-order:5432/orders?sslmode=disable
+    ports:
+      - "9188:9187"
+    depends_on:
+      - postgres-order
+
+  # ----------------------
+  # RabbitMQ + exporter
+  # ----------------------
   rabbitmq:
-    image: rabbitmq:4.1.6-management
+    image: rabbitmq:4.2.1-management
     ports:
       - 5672:5672
       - 15672:15672
 
+  rabbitmq-exporter:
+    image: kbudde/rabbitmq-exporter:latest
+    environment:
+      - RABBIT_URL=http://rabbitmq:15672
+      - RABBIT_USER=guest
+      - RABBIT_PASSWORD=guest
+    ports:
+      - "9419:9419"
+    depends_on:
+      - rabbitmq
+
+  # ----------------------
+  # Search service + worker
+  # ----------------------
   search-api:
     build:
       context: ./services/searchService
-      dockerfile: Dockerfile  
-    environment:
-      - ELASTIC_URI=http://elasticsearch:9200
-      - RABBIT_HOST=rabbitmq
-      - ASPNETCORE_URLS=http://+:80
-    depends_on:
-      - elasticsearch
-      - rabbitmq
+      target: search-api
     ports:
-      - 5000:80
+      - "5000:80"
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - RABBIT_HOST=rabbitmq
+      - ELASTIC_URI=http://elasticsearch:9200
+
+  search-worker:
+    build:
+      context: ./services/searchService
+      target: search-worker
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - ELASTIC_URI=http://elasticsearch:9200
+      - METRICS_PORT=9184
+    ports:
+      - "9184:9184"
+
+  # ----------------------
+  # Warehouse service + worker (point to postgres-warehouse, redis-warehouse)
+  # ----------------------
+  warehouse:
+    build:
+      context: .
+      dockerfile: services/warehouseService/Dockerfile
+    command: ["dotnet", "api/Warehouse.Api.dll"]
+    environment:
+      - POSTGRES_CONNECTION=Host=postgres-warehouse;Port=5432;Database=warehouse;Username=postgres;Password=postgres
+      - REDIS_CONNECTION=redis-warehouse:6379
+      - RABBIT_HOST=rabbitmq
+      - REDIS_TTL_SECONDS=300
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - 5100:80
+    depends_on:
+      - postgres-warehouse
+      - redis-warehouse
+      - rabbitmq
+
+  warehouse-worker:
+    build:
+      context: .
+      dockerfile: services/warehouseService/Dockerfile
+    command: ["dotnet", "worker/Warehouse.Worker.dll"]
+    environment:
+      - POSTGRES_CONNECTION=Host=postgres-warehouse;Port=5432;Database=warehouse;Username=postgres;Password=postgres
+      - REDIS_CONNECTION=redis-warehouse:6379
+      - RABBIT_HOST=rabbitmq
+      - METRICS_PORT=9185
+    ports:
+      - "9185:9185"
+    depends_on:
+      - postgres-warehouse
+      - redis-warehouse
+      - rabbitmq
+
+  # ----------------------
+  # Order service (point to postgres-order, redis-order)
+  # ----------------------
+  order:
+    build:
+      context: .
+      dockerfile: services/orderService/Dockerfile
+    command: ["dotnet", "api/Order.Api.dll"]
+    environment:
+      - POSTGRES_CONNECTION=Host=postgres-order;Port=5432;Database=orders;Username=postgres;Password=postgres
+      - REDIS_CONNECTION=redis-order:6379
+      - RABBIT_HOST=rabbitmq
+      - REDIS_TTL_SECONDS=300
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - 5200:80
+    depends_on:
+      - postgres-order
+      - redis-order
+      - rabbitmq
+
 volumes:
   esdata:
+  pgdata_warehouse:
+  pgdata_order:

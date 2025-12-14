@@ -2,18 +2,20 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi;
+using Prometheus;
 using Search.Application.Interfaces;
 using Search.Application.Services;
 using Search.Infrastructure;
 using Search.Infrastructure.Interfaces;
 using Search.Infrastructure.Messaging;
 using Search.Infrastructure.Repositories;
-using Search.Worker;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddEnvironmentVariables();
 
+builder.Services.AddHealthChecks();
 
 builder.Services.AddSingleton<ElasticClientProvider>();
 
@@ -21,8 +23,6 @@ builder.Services.AddScoped<IElasticBookRepository, ElasticBookRepository>();
 builder.Services.AddScoped<ISearchService, SearchService>();
 
 builder.Services.AddSingleton<IEventPublisher, RabbitMqEventPublisher>();
-
-builder.Services.AddHostedService<QueueConsumerHostedService>();
 
 
 builder.Services.AddControllers();
@@ -38,6 +38,11 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Search API v1"));
 //}
+
+
+app.UseHttpMetrics();
+app.MapMetrics();
+app.MapHealthChecks("/health");
 
 app.MapControllers();
 app.Run();

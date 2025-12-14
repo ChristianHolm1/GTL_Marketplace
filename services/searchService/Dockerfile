@@ -1,41 +1,47 @@
-# services/searchService/Dockerfile
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-WORKDIR /app
-EXPOSE 80
-
+# -----------------------------------------
+# BUILD STAGE
+# -----------------------------------------
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy solution and project files first for caching
 COPY searchService.sln ./
 
 COPY Search.Api/Search.Api.csproj Search.Api/
-COPY Search.Application/Search.Application.csproj Search.Application/
-COPY Search.Infrastructure/Search.Infrastructure.csproj Search.Infrastructure/
 COPY Search.Worker/Search.Worker.csproj Search.Worker/
+COPY Search.Infrastructure/Search.Infrastructure.csproj Search.Infrastructure/
+COPY Search.Application/Search.Application.csproj Search.Application/
 COPY Search.Models/Search.Models.csproj Search.Models/
 
-# Restore using the solution (uses copied csproj layout)
-RUN dotnet restore "searchService.sln"
+RUN dotnet restore searchService.sln
 
-# Copy the rest of the service source
+# Copy full source
 COPY . .
 
-# Publish the API project
-WORKDIR /src/Search.Api
-RUN dotnet publish "Search.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false /p:TrimUnusedDependencies=true
+# Publish API
+RUN dotnet publish Search.Api/Search.Api.csproj -c Release -o /app/api \
+    /p:UseAppHost=false
 
-# Runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+# Publish Worker
+RUN dotnet publish Search.Worker/Search.Worker.csproj -c Release -o /app/worker \
+    /p:UseAppHost=false
+
+# -----------------------------------------
+# API RUNTIME IMAGE
+# -----------------------------------------
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS search-api
+WORKDIR /app
+COPY --from=build /app/api ./
+ENTRYPOINT ["dotnet", "Search.Api.dll"]
+
+# -----------------------------------------
+# WORKER RUNTIME IMAGE (use ASP.NET runtime so Microsoft.AspNetCore.App is present)
+# -----------------------------------------
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS search-worker
 WORKDIR /app
 
-# optional: run as non-root (uncomment if you add chown steps)
-# RUN adduser --disabled-password --gecos "" appuser && chown -R appuser /app
-# USER appuser
+# Copy worker publish output into this image
+COPY --from=build /app/worker ./
 
-COPY --from=build /app/publish .
+ENV METRICS_PORT=9184
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD curl -f http://localhost:80/health || exit 1
-
-ENTRYPOINT ["dotnet", "Search.Api.dll"]
+ENTRYPOINT ["dotnet", "Search.Worker.dll"]

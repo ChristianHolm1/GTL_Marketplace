@@ -1,0 +1,80 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+
+  # ----------------------
+  # Search service
+  # ----------------------
+  - job_name: 'search_api'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['search-api:80']
+
+  - job_name: 'search_worker'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['search-worker:9184']
+
+  # ----------------------
+  # Warehouse service
+  # ----------------------
+  - job_name: 'warehouse_api'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['warehouse:80']
+
+  - job_name: 'warehouse_worker'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['warehouse-worker:9185']
+
+  # ----------------------
+  # Order service
+  # ----------------------
+  - job_name: 'order_api'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['order:80']
+
+  # ----------------------
+  # Redis exporters
+  # ----------------------
+  - job_name: 'redis_warehouse'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['redis-exporter-warehouse:9121']
+
+  - job_name: 'redis_order'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['redis-exporter-order:9121']
+
+  # ----------------------
+  # Postgres exporters
+  # ----------------------
+  - job_name: 'postgres_warehouse'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['postgres-exporter-warehouse:9187']
+
+  - job_name: 'postgres_order'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['postgres-exporter-order:9187']
+
+  # ----------------------
+  # RabbitMQ exporter
+  # ----------------------
+  - job_name: 'rabbitmq'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['rabbitmq-exporter:9419']
+
+  # ----------------------
+  # Elasticsearch exporter
+  # ----------------------
+  - job_name: 'elasticsearch'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['elasticsearch-exporter:9114']
